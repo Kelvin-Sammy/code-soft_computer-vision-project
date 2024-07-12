@@ -1,0 +1,31 @@
+!pip install tensorflow
+!pip install numpy
+!pip install matplotlib
+from google.colab import files
+from google.colab import drive
+import tensorflow as tf
+from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
+from tensorflow.keras.preprocessing import image
+import numpy as np
+
+# Mount Google Drive
+drive.mount('/content/drive')
+# List files in the directory to verify the correct path
+!ls /content/drive/MyDrive/
+#path to your image
+img_path = '/content/drive/MyDrive/IMG-20230407-WA0043.jpg'  # Change this to the correct path of your image
+# Load the pre-trained ResNet50 model
+model = ResNet50(weights='imagenet', include_top=False)
+
+def extract_features(img_path):
+    img = image.load_img(img_path, target_size=(224, 224))
+    x = image.img_to_array(img)
+    x = np.expand_dims(x, axis=0)
+    x = preprocess_input(x)
+    features = model.predict(x)
+    return features
+
+# Extract features from the specified image
+features = extract_features(img_path)
+print(features.shape)  # Expected output: (1, 7, 7, 2048)
+
